@@ -1,0 +1,55 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: run-task
+spec:
+  params:
+  - name: contenttype
+    description: The Content-Type of the event
+    type: string
+  steps:
+  - name: run-task
+    image: quay.io/khrm/bash
+    command: ["bash", "-c"]
+    args:
+      - echo -e 'Task!\nContent-Type is $(params.contenttype)'
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: finished
+spec:
+  params:
+  - name: gitrevision
+    description: Revision for Push
+    type: string
+  steps:
+  - name: finished
+    image: quay.io/khrm/httpie
+    command: ["http","--ignore-stdin", "https://itchy-bat-30.telebit.io/hooks/ayo9cSchn2vdCNPKp/og3sts783NnBCfo3BjQzWDCKqyu6y72zgzL7utz5pEGqxSnh", "text='Pipeline for $(params.gitrevision) Finished'"]
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: incoming-pipeline
+spec:
+  params:
+  - name: contenttype
+    description: The Content-Type of the event
+    type: string
+  - name: gitrevision
+    description: Revision for Push
+    type: string
+  tasks:
+  - name: run-task
+    taskRef:
+      name: run-task
+    params:
+    - name: contenttype
+      value: $(params.contenttype)
+  - name: finished
+    taskRef:
+      name: finished
+    params:
+    - name: gitrevision
+      value: $(params.gitrevision)

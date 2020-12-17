@@ -1,0 +1,51 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerTemplate
+metadata:
+  name: pipeline-template
+spec:
+  params:
+  - name: contenttype
+    description: The Content-Type of the event
+  - name: gitrevision
+    description: Revision of push event
+  resourcetemplates:
+  - apiVersion: tekton.dev/v1beta1
+    kind: PipelineRun
+    metadata:
+      generateName: incoming-
+    spec:
+      pipelineRef:
+        name: incoming-pipeline
+      params:
+      - name: contenttype
+        value: $(tt.params.contenttype)
+      - name: gitrevision
+        value: $(tt.params.gitrevision)
+---
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerTemplate
+metadata:
+  name: outgoing-template
+spec:
+  params:
+  - name: contenttype
+    description: The Content-Type of the event
+  - name: username
+    description: Username of sender
+  - name: message
+    description: Message
+  resourcetemplates:
+  - apiVersion: tekton.dev/v1beta1
+    kind: PipelineRun
+    metadata:
+      generateName: outgoing-
+    spec:
+      pipelineRef:
+        name: outgoing-pipeline
+      params:
+      - name: contenttype
+        value: $(tt.params.contenttype)
+      - name: username
+        value: $(tt.params.username)
+      - name: message
+        value: $(tt.params.message)

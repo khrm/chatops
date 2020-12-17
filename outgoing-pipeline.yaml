@@ -1,0 +1,55 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: run-cmdtask
+spec:
+  params:
+  - name: message
+    description: Message
+    type: string
+  steps:
+  - name: run-task
+    image: quay.io/khrm/bash
+    command: ["bash", "-c"]
+    args:
+      - echo -e 'Task!\Message is $(params.message)'
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: received
+spec:
+  params:
+  - name: username
+    description: Username of the Sender
+    type: string
+  steps:
+  - name: received
+    image: quay.io/khrm/httpie
+    command: ["http","--ignore-stdin", "https://itchy-bat-30.telebit.io/hooks/ayo9cSchn2vdCNPKp/og3sts783NnBCfo3BjQzWDCKqyu6y72zgzL7utz5pEGqxSnh", "text='Hi $(params.username)! Command Finished'"]
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: outgoing-pipeline
+spec:
+  params:
+  - name: username
+    description: Username of the Sender
+    type: string
+  - name: message
+    description: Message
+    type: string
+  tasks:
+  - name: run-cmdtask
+    taskRef:
+      name: run-cmdtask
+    params:
+    - name: message
+      value: $(params.message)
+  - name: received
+    taskRef:
+      name: received
+    params:
+    - name: username
+      value: $(params.username)
