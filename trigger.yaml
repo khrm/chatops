@@ -1,15 +1,15 @@
 apiVersion: triggers.tekton.dev/v1alpha1
 kind: Trigger
 metadata:
-  name: trigger
+  name: incoming
 spec:
   interceptors:
     - cel:
         filter: "header.match('X-GitHub-Event', 'push')"
   bindings:
-  - ref: pipeline-binding
+  - ref: incoming-binding
   template:
-    ref: pipeline-template
+    ref: incoming-template
 ---
 apiVersion: triggers.tekton.dev/v1alpha1
 kind: Trigger
@@ -20,6 +20,6 @@ spec:
     - cel:
         filter: "body.token == 'vrn1jwx4a9h'"
   bindings:
-  - ref: contenttype-binding
+  - ref: outgoing-binding
   template:
     ref: outgoing-template

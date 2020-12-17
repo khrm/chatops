@@ -8,7 +8,7 @@ spec:
     description: Message
     type: string
   steps:
-  - name: run-task
+  - name: print-message
     image: quay.io/khrm/bash
     command: ["bash", "-c"]
     args:

@@ -1,7 +1,7 @@
 apiVersion: triggers.tekton.dev/v1alpha1
 kind: TriggerTemplate
 metadata:
-  name: pipeline-template
+  name: incoming-template
 spec:
   params:
   - name: contenttype

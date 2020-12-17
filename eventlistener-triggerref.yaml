@@ -1,9 +1,9 @@
 apiVersion: triggers.tekton.dev/v1alpha1
 kind: EventListener
 metadata:
-  name: listener-triggerref
+  name: listener
 spec:
   serviceAccountName: chatops-sa
   triggers:
-    - triggerRef: trigger
+    - triggerRef: incoming
     - triggerRef: outgoing

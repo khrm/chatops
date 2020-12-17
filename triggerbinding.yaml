@@ -1,7 +1,7 @@
 apiVersion: triggers.tekton.dev/v1alpha1
 kind: TriggerBinding
 metadata:
-  name: pipeline-binding
+  name: incoming-binding
 spec:
   params:
   - name: gitrevision
@@ -14,7 +14,7 @@ spec:
 apiVersion: triggers.tekton.dev/v1alpha1
 kind: TriggerBinding
 metadata:
-  name: contenttype-binding
+  name: outgoing-binding
 spec:
   params:
   - name: username
